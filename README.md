@@ -29,5 +29,49 @@ Esta API em Python implementa a resolução do problema de Roteirização de Ve�
 ````
 4. Acesse a documentação interativa em `http://127.0.0.1:8000/docs` para testar o endpoint `/optimize`.
 
+## Frontend
+
+Há um [Projeto Frontend](https://github.com/alexistoigo/vrptw-api), que pode ser utilizado em conjunto com esta api.
+
+## Exemplo de Body Request
+````JSON
+  {
+   "origin":"Av. Paulista, 1000, São Paulo, SP, Brasil",
+   "destinations":[
+      {
+         "address":"Rua Augusta, 500, São Paulo, SP, Brasil",
+         "time_window_start":36000,
+         "time_window_end":39600
+      },
+      {
+         "address":"Rua das Flores, 250, São Paulo, SP, Brasil",
+         "time_window_start":37800,
+         "time_window_end":41400
+      },
+      {
+         "address":"Av. Brigadeiro Faria Lima, 1500, São Paulo, SP, Brasil",
+         "time_window_start":32400,
+         "time_window_end":36000
+      }
+   ]
+}
+````
+
+## Exemplo de Resposta
+````JSON
+{
+	"optimized_route": [
+		"Av. Paulista, 1000, São Paulo, SP, Brasil",
+		"Av. Brigadeiro Faria Lima, 1500, São Paulo, SP, Brasil",
+		"Rua Augusta, 500, São Paulo, SP, Brasil",
+		"Rua das Flores, 250, São Paulo, SP, Brasil",
+		"Av. Paulista, 1000, São Paulo, SP, Brasil"
+	],
+	"google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=Av. Paulista, 1000, São Paulo, SP, Brasil&destination=Av. Paulista, 1000, São Paulo, SP, Brasil&waypoints=Av. Brigadeiro Faria Lima, 1500, São Paulo, SP, Brasil|Rua Augusta, 500, São Paulo, SP, Brasil|Rua das Flores, 250, São Paulo, SP, Brasil&travelmode=driving"
+}
+````
+
 ---
 
+*Obs: O algoritmo pode não encontrar uma rota caso o tempo mínimo ou máximo de uma entrega seja impossível de fazer uma rota. 
+Ex: uma entrega que precisa ser entregue num período máximo de 15 minutos, porém o tempo de deslocamento da origem leva 30 minutos para percorrer. Neste caso não poderá ser encontrado uma rota.*
