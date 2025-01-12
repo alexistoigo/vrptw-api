@@ -1,12 +1,20 @@
-# main.py
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 import googlemaps
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 GOOGLE_API_KEY = ""
 
@@ -15,9 +23,9 @@ class Destination(BaseModel):
     time_window_start: int  # tempo em segundos do início do dia
     time_window_end: int    # tempo em segundos do início do dia
 
-# Modelo de dados para a requisição da rota
 class RouteRequest(BaseModel):
     origin: str
+    origin_end: Optional[str] = None
     destinations: List[Destination]
 
 def create_distance_time_matrix(gmaps_client, addresses):
@@ -27,7 +35,6 @@ def create_distance_time_matrix(gmaps_client, addresses):
     result = gmaps_client.distance_matrix(origins=addresses, destinations=addresses, mode='driving')
     distance_matrix = []
     time_matrix = []
-    # Percorre as linhas do resultado para construir as matrizes
     for row in result['rows']:
         distance_row = []
         time_row = []
@@ -131,11 +138,11 @@ async def optimize_route(request: RouteRequest):
     destination_address = route_addresses[-1]
     waypoints = route_addresses[1:-1]
     waypoints_str = "|".join(waypoints)
-    # Monta a URL do Google Maps Directions API
     maps_url = (f"https://www.google.com/maps/dir/?api=1"
                 f"&origin={origin_address}"
                 f"&destination={destination_address}"
-                f"&waypoints={waypoints_str}")
+                f"&waypoints={waypoints_str}"
+                f"&travelmode=driving")
 
     return {
         "optimized_route": route_addresses,
