@@ -31,7 +31,7 @@ Esta API em Python implementa a resolução do problema de Roteirização de Ve�
 
 ## Frontend
 
-Há um [Projeto Frontend](https://github.com/alexistoigo/vrptw-api), que pode ser utilizado em conjunto com esta api.
+Há um [Projeto Frontend](https://github.com/alexistoigo/vrptw-frontend), que pode ser utilizado em conjunto com esta api.
 
 ## Exemplo de Body Request
 ````JSON
